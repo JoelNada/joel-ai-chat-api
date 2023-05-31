@@ -9,7 +9,7 @@ app.use(express.json());
 app.use(cors());
 app.use("/api/user", user);
 require("dotenv").config();
-const port = process.env.port;
+const port = process.env.port || 5000;
 
 db.connect((err) => {
   if (err) {
