@@ -37,7 +37,7 @@ user.post("/login", async (request, response) => {
           }
         }
       } catch (err) {
-        response.status(500).send({ message: "Error Logging in !!" });
+        response.status(500).send({ message: "Error Logging in !!", err });
       }
     }
   );
@@ -62,12 +62,10 @@ user.post("/register", async (request, response) => {
         details.password = password;
         db.query("insert into users SET ?", details, (err, result) => {
           if (err) {
-            response
-              .status(500)
-              .send({
-                message: "Something went wrong, Please try again !!",
-                err,
-              });
+            response.status(500).send({
+              message: "Something went wrong, Please try again !!",
+              err,
+            });
           } else {
             response.send("Registered successfully !!");
           }
