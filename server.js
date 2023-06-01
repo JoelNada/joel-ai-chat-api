@@ -30,7 +30,7 @@ app.post("/completions", (req, res) => {
         content: message,
       },
     ],
-    max_tokens: 100,
+    max_tokens: 4000,
   });
 
   openApi(body)
