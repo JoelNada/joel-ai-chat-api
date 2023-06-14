@@ -1,5 +1,6 @@
 const express = require("express");
 const cors = require("cors");
+const morgan = require("morgan");
 const { openApi } = require("./apiHandling/apicall");
 const db = require("./API/dbconnector");
 const user = require("./API/userApi");
@@ -9,39 +10,38 @@ app.use(express.json());
 app.use(cors());
 app.use("/api/user", user);
 require("dotenv").config();
+app.use(morgan("combined"));
 const port = process.env.port || 5000;
 
 db.connect((err) => {
-  if (err) {
-    console.log("Database Connection failed !!");
-  } else {
-    console.log("Connected to Database..");
-  }
+    if (err) {
+        console.log("Database Connection failed !!");
+    } else {
+        console.log("Connected to Database..");
+    }
 });
 
 app.post("/completions", (req, res) => {
-  const { message } = req.body;
+    const { message } = req.body;
 
-  const body = JSON.stringify({
-    model: "gpt-3.5-turbo",
-    messages: [
-      {
-        role: "user",
-        content: message,
-      },
-    ],
-    max_tokens: 4000,
-  });
-
-  openApi(body)
-    .then((response) => {
-      res.send({ reply: response.data.choices[0].message.content });
-    })
-    .catch((err) => {
-      console.log(err);
+    const body = JSON.stringify({
+        model: "gpt-3.5-turbo",
+        messages: [{
+            role: "user",
+            content: message,
+        }, ],
+        max_tokens: 4000,
     });
+
+    openApi(body)
+        .then((response) => {
+            res.send({ reply: response.data.choices[0].message.content });
+        })
+        .catch((err) => {
+            console.log(err);
+        });
 });
 
 app.listen(port, () => {
-  console.log(`Server started and running at port ${port}`);
+    console.log(`Server started and running at port ${port}`);
 });
